@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  todoapplication.api:
+    image: ${DOCKER_REGISTRY-}todoapplicationapi
+    build:
+      context: .
+      dockerfile: src/TodoApplication.API/Dockerfile
+   
+  todoapplication.database:
+    image: postgres:latest
+    container_name: product.psql
+    environment:
+     - POSTGRES_DB=product
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=postgres
+    volumes:
+     - ./.containers/product-db:/var/lib/postgresql/data 
+    ports:
+     - 5432:5432
+
+  todoapplication-seq:
+    image: datalust/seq:latest
+    container_name: todoapplication.seq
+    environment:
+     - ACCEPT_EULA=Y
+    ports:
+     - 5341:5341
+     - 8000:80
+
+ 
