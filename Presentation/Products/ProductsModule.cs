@@ -5,9 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using SharedKernel;
-using System.Threading;
-
+using Presentation.Extensions;
 namespace Presentation.Products;
 
 public class ProductsModule : ICarterModule
@@ -22,7 +20,7 @@ public class ProductsModule : ICarterModule
     {
         var getProductQuery = new GetProductByIdQuery(id);
         var result = await sender.Send(getProductQuery, cancellationToken);
-        return result.IsSuccess ? Results.Ok(result) : Results.NotFound(result.Error);
+        return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
     }
 
     public async Task<IResult> AddProduct(string Name, ISender sender, CancellationToken cancellationToken)
