@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Messaging;
+using Domain.Entities;
 using Domain.Repositories;
 using SharedKernel;
 
@@ -18,12 +19,12 @@ internal sealed class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQ
     {
         var product = await _repository.GetByIdAsync(request.productId);
 
-        if(product is null)
+        if (product is null)
         {
-            return Result.Failure<ProductResponse>(new Error("Product.NotFound",$"Product with id ${request.productId} not found."));
+            return Result.Failure<ProductResponse>(ProductError.NotFound(request.productId));
         }
 
-        var response = new ProductResponse(product.Id,product.Name);
+        var response = new ProductResponse(product.Id, product.Name);
         return response;
     }
 }
