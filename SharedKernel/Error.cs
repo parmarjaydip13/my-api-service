@@ -1,4 +1,6 @@
-﻿namespace SharedKernel;
+﻿using System.Text.Json.Serialization;
+
+namespace SharedKernel;
 
 public record Error
 {
@@ -15,12 +17,14 @@ public record Error
 
     public string Code { get; set; }
     public string Description { get; set; }
+
+    [JsonIgnore]
     public ErrorType ErrorType { get; set; }
 
-    public static Error NotFound(string code, string description)=> new (code, description, ErrorType.NotFound);
-    public static Error Validation(string code, string description)=> new (code, description, ErrorType.Validation);
-    public static Error Conflict(string code, string description)=> new (code, description, ErrorType.Conflict);
-    public static Error Failure(string code, string description)=> new (code, description, ErrorType.Failure);
+    public static Error NotFound(string code, string description) => new(code, description, ErrorType.NotFound);
+    public static Error Validation(string code, string description) => new(code, description, ErrorType.Validation);
+    public static Error Conflict(string code, string description) => new(code, description, ErrorType.Conflict);
+    public static Error Failure(string code, string description) => new(code, description, ErrorType.Failure);
 
 }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel;
 
@@ -7,24 +8,16 @@ namespace Presentation.Extensions
 
     public static class ResultExtensions
     {
-        public static IResult ToProblemResult(this Result result)
-        {
-            if (result.IsSuccess)
+        public static IResult ToProblemResult(this Result result) =>
+            result switch
             {
-                throw new InvalidOperationException();
-            }
+                { IsSuccess: true } => throw new InvalidOperationException(),
 
-            var problemDetails = new ProblemDetails
-            {
-                Type = "",
-                Status = GetStatusCode(result.Error.ErrorType),
-                Title = GetTitle(result.Error.ErrorType),
-                Instance = "",
-                Detail = result.Error.Description
+                IValidationResult validationResult =>
+                  CreateProblemDetails(result.Error, validationResult.Errors),
+
+                _ => CreateProblemDetails(result.Error)
             };
-
-            return Results.Problem(problemDetails);
-        }
 
         private static int GetStatusCode(ErrorType errorType) =>
             errorType switch
@@ -35,13 +28,30 @@ namespace Presentation.Extensions
                 _ => StatusCodes.Status500InternalServerError // Fallback for unknown error types
             };
 
-        private static string GetTitle(ErrorType errorType) =>
+        private static string GetType(ErrorType errorType) =>
             errorType switch
             {
-                ErrorType.Validation => "Bad Request",
-                ErrorType.NotFound => "Not Found",
-                ErrorType.Conflict => "Conflict",
-                _ => "Unexpected Error" // Fallback for unknown error types
+                ErrorType.Validation => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                ErrorType.NotFound => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                ErrorType.Conflict => "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+                _ => "https://tools.ietf.org/html/rfc7231#section-6.6.1" // Fallback for unknown error types
             };
+
+        private static IResult CreateProblemDetails(Error error, Error[]? errors = null)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = error.ErrorType.ToString(),
+                Status = GetStatusCode(error.ErrorType),
+                Type = GetType(error.ErrorType),
+                Detail = error.Description,
+            };
+
+            if (errors != null)
+            {
+                problemDetails.Extensions[nameof(errors)] = errors;
+            }
+            return Results.Problem(problemDetails);
+        }
     }
 }

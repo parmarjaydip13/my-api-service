@@ -17,7 +17,7 @@ internal sealed class CreateProductCommandHandler : ICommandHandler<CreateProduc
     public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         var productName = request.Name;
-        var product = new Product { Name = productName };
+        var product = new Product { ProductName  = productName, Email = request.Email };
         await _ProductRepository.AddAsync(product);
         return Result.Success<Product>(product);
     }

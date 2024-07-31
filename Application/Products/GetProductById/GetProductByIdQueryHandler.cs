@@ -19,12 +19,14 @@ internal sealed class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQ
     {
         var product = await _repository.GetByIdAsync(request.productId);
 
+        return Result.Failure<ProductResponse>(ProductError.NotFound(request.productId));
+
         if (product is null)
         {
             return Result.Failure<ProductResponse>(ProductError.NotFound(request.productId));
         }
 
-        var response = new ProductResponse(product.Id, product.Name);
+        var response = new ProductResponse(product.ProductID, product.ProductName );
         return response;
     }
 }

@@ -23,10 +23,17 @@ public class ProductsModule : ICarterModule
         return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
     }
 
-    public async Task<IResult> AddProduct(string Name, ISender sender, CancellationToken cancellationToken)
+    public async Task<IResult> AddProduct(AddProductDTO data, ISender sender, CancellationToken cancellationToken)
     {
-        var createCommand = new CreateProductCommand(Name);
+        var createCommand = new CreateProductCommand(data.Name, data.Email);
         var result = await sender.Send(createCommand, cancellationToken);
-        return Results.Ok(result);
+        return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
+    }
+
+    public class AddProductDTO
+    {
+        public string Name { get; set; } = null!;
+
+        public string? Email { get; set; }
     }
 }
