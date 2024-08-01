@@ -21,7 +21,7 @@ internal sealed class ProductRepository : IProductRepository
 
     public Task<Product?> GetByIdAsync(Guid id)
     {
-        var product = _context.Products.SingleOrDefaultAsync(p => p.Id == id);
+        var product = _context.Products.SingleOrDefaultAsync(p => p.ProductID == id);
         return product;
     }
 }

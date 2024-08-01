@@ -5,9 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using SharedKernel;
-using System.Threading;
-
+using Presentation.Extensions;
 namespace Presentation.Products;
 
 public class ProductsModule : ICarterModule
@@ -22,13 +20,20 @@ public class ProductsModule : ICarterModule
     {
         var getProductQuery = new GetProductByIdQuery(id);
         var result = await sender.Send(getProductQuery, cancellationToken);
-        return result.IsSuccess ? Results.Ok(result) : Results.NotFound(result.Error);
+        return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
     }
 
-    public async Task<IResult> AddProduct(string Name, ISender sender, CancellationToken cancellationToken)
+    public async Task<IResult> AddProduct(AddProductDTO data, ISender sender, CancellationToken cancellationToken)
     {
-        var createCommand = new CreateProductCommand(Name);
+        var createCommand = new CreateProductCommand(data.Name, data.Email);
         var result = await sender.Send(createCommand, cancellationToken);
-        return Results.Ok(result);
+        return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
+    }
+
+    public class AddProductDTO
+    {
+        public string Name { get; set; } = null!;
+
+        public string? Email { get; set; }
     }
 }

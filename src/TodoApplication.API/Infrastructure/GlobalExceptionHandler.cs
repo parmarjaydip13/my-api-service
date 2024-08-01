@@ -21,9 +21,11 @@ namespace TodoApplication.API.Infrastructure
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Server Error",
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                Detail = "Something went wrong.",
             };
 
+            problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
             return true;
