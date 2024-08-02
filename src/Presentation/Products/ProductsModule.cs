@@ -1,7 +1,7 @@
-﻿using Application.Products.Create;
-using Application.Products.GetProductById;
+﻿using Application.Products.Command.Create;
+using Application.Products.Query.GetProductById;
 using Carter;
-using Domain.Primitives;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +22,7 @@ public class ProductsModule : ICarterModule
     {
         var getProductQuery = new GetProductByIdQuery(id);
         var result = await sender.Send(getProductQuery, cancellationToken);
-        return result.IsSuccess ? Results.Ok(result) : result.ToProblemResult();
+        return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemResult();
     }
 
     public async Task<IResult> AddProduct([FromBody] AddProductDto data, ISender sender, CancellationToken cancellationToken)

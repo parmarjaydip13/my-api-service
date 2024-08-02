@@ -1,8 +1,7 @@
-﻿
-using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Messaging;
 using Domain.Entities;
-using Domain.Primitives;
+using Domain.Enums;
 
-namespace Application.Products.Create;
+namespace Application.Products.Command.Create;
 
 public record CreateProductCommand(string ProductName, decimal Price, Category Category) : ICommand<Product>;

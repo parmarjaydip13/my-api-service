@@ -2,10 +2,8 @@
 
 namespace Domain.Repositories
 {
-    public interface IProductRepository
+    public interface IProductRepository : IRepository<Product>
     {
-        Task AddAsync(Product product);
 
-        Task<Product?> GetByIdAsync(Guid id);
     }
 }

@@ -1,5 +1,6 @@
 using Application;
 using Carter;
+using Infrastructure;
 using Persistence;
 using Serilog;
 using TodoApplication.API.Infrastructure;
@@ -7,13 +8,12 @@ using TodoApplication.API.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddInfrastructure()
     .AddApplication()
     .AddPersistence(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

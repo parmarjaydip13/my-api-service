@@ -1,9 +1,9 @@
 ﻿using Application.Abstractions.Messaging;
-using Domain.Entities;
+using Domain.Errors;
 using Domain.Repositories;
 using SharedKernel;
 
-namespace Application.Products.GetProductById;
+namespace Application.Products.Query.GetProductById;
 
 internal sealed class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, ProductResponse>
 {
@@ -17,14 +17,14 @@ internal sealed class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQ
 
     public async Task<Result<ProductResponse>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        var product = await _repository.GetByIdAsync(request.productId);
+        var product = await _repository.GetByIdAsync(request.productId, cancellationToken);
 
         if (product is null)
         {
-            return Result.Failure<ProductResponse>(ProductError.NotFound(request.productId));
+            return Result.Failure<ProductResponse>(DomainErrors.ProductError.NotFound(request.productId));
         }
 
-        var response = new ProductResponse(product.Id, product.ProductName );
+        var response = new ProductResponse(product.Id, product.ProductName);
         return response;
     }
 }

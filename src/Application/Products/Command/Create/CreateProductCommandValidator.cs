@@ -2,7 +2,7 @@
 using FluentValidation;
 using System.Linq.Expressions;
 
-namespace Application.Products.Create;
+namespace Application.Products.Command.Create;
 
 internal sealed class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {

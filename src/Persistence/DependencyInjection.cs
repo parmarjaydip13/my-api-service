@@ -1,25 +1,33 @@
-﻿using Application.Data;
-using Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.Repositories;
+using Persistence.Interceptors;
 
 namespace Persistence;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services , 
+    public static IServiceCollection AddPersistence(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services
+            .Scan(
+                selector => selector
+                    .FromAssemblies(AssemblyReference.Assembly)
+                    .AddClasses(false)
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime());
+
+        services.AddSingleton<ConvertDomainEventsToOutBoxMessagesInterceptor>();
+
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            var interceptor = sp.GetService<ConvertDomainEventsToOutBoxMessagesInterceptor>()!;
+            options.UseNpgsql(configuration.GetConnectionString("Database"))
+                .AddInterceptors(interceptor);
+
         });
 
-        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-        services.AddScoped<IProductRepository, ProductRepository>();
-        
         return services;
     }
 }

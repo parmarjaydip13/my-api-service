@@ -31,19 +31,18 @@ public class Result
 }
 
 
-public class Result<Tvalue> : Result
+public class Result<TValue> : Result
 {
-    private readonly Tvalue? _value;
-
-    protected internal Result(Tvalue? value, bool IsSuccess, Error error) : base(IsSuccess, error)
+    private readonly TValue? _value;
+    protected internal Result(TValue? value, bool isSuccess, Error error) : base(isSuccess, error)
     {
         _value = value;
     }
 
-    public Tvalue Value => IsSuccess ? _value! :
+    public TValue Value => IsSuccess ? _value! :
         throw new InvalidOperationException("The value of failure result can't be access");
 
-    public static implicit operator Result<Tvalue>(Tvalue? value) =>
-        value is not null ? Success(value) : Failure<Tvalue>(Error.NullValue);
+    public static implicit operator Result<TValue>(TValue? value) =>
+        value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
 
 }

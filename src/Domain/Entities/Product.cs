@@ -1,8 +1,10 @@
-﻿using Domain.Primitives;
+﻿using Domain.DomainEvents;
+using Domain.Enums;
+using Domain.Primitives;
 
 namespace Domain.Entities;
 
-public sealed class Product : Entity
+public sealed class Product : AggregateRoot
 {
     private Product(Guid id, string productName, decimal price, Category category) : base(id)
     {
@@ -17,7 +19,8 @@ public sealed class Product : Entity
 
     public static Product Create(string productName, decimal price, Category category)
     {
-        // Here you can include additional validation or logic if needed
-        return new Product(Guid.NewGuid(), productName, price, category);
+        var product = new Product(Guid.NewGuid(), productName, price, category);
+        product.RaiseDomainEvent(new ProductCreateDomainEvent(product.Id));
+        return product;
     }
 }
