@@ -27,5 +27,19 @@ services:
     ports:
      - 5341:5341
      - 8000:80
+  
+  todoapplication-mq:
+     image: rabbitmq:3.11.7-management
+     container_name: Queue
+     hostname: todoapplication-queue
+     volumes:
+      - ./.containers/queue/data/:/var/lib/rabbitmq 
+      - ./.containers/queue/log/:/var/log/rabbitmq
+     environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+     ports:
+      - 15672:15672  
+ 
 
  
