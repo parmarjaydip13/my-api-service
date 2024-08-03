@@ -1,4 +1,4 @@
-﻿namespace Application.Products.Event;
+﻿namespace MessageContract;
 public record ProductCreatedEvent
 {
     public string ProductName { get; set; } = string.Empty;

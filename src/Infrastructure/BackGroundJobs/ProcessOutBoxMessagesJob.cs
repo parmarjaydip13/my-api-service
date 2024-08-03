@@ -1,6 +1,7 @@
 ﻿using Domain.Primitives;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Persistence;
 using Persistence.Outbox;
@@ -13,11 +14,13 @@ public class ProcessOutBoxMessagesJob : IJob
 {
     private readonly ApplicationDbContext _context;
     private readonly IPublisher _publisher;
+    private readonly ILogger<ProcessOutBoxMessagesJob> _logger;
 
-    public ProcessOutBoxMessagesJob(ApplicationDbContext context, IPublisher publisher)
+    public ProcessOutBoxMessagesJob(ApplicationDbContext context, IPublisher publisher, ILogger<ProcessOutBoxMessagesJob> logger)
     {
         _context = context;
         _publisher = publisher;
+        this._logger = logger;
     }
 
     public async Task Execute(IJobExecutionContext context)

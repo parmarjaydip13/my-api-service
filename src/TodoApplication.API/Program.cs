@@ -1,10 +1,7 @@
 using Application;
-using Application.Abstractions.EventBus;
-using Application.Products.Event;
 using Carter;
 using Infrastructure;
 using Infrastructure.MessageBroker;
-using MassTransit;
 using Microsoft.Extensions.Options;
 using Persistence;
 using Serilog;
@@ -25,25 +22,6 @@ builder.Services
 
 
 
-//builder.Services.AddMassTransit(configure =>
-//{
-//    configure.SetKebabCaseEndpointNameFormatter();
-    
-//    configure.AddConsumer<ProductCreatedEventConsumer>();
-
-//    configure.UsingRabbitMq((context, configurator) =>
-//    {
-//        var settings = context.GetRequiredService<MessageBrokerSettings>();
-
-//        configurator.Host(new Uri(settings.Host), h =>
-//        {
-//            h.Username(settings.UserName);
-//            h.Password(settings.Password);
-//        });
-
-//        configurator.ConfigureEndpoints(context);
-//    });
-//});
 
 //builder.Services.AddTransient<IEventBus, EventBus>();
 

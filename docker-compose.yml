@@ -1,45 +1,59 @@
 version: '3.4'
 
 services:
-  todoapplication.api:
-    image: ${DOCKER_REGISTRY-}todoapplicationapi
+  todoapp-api:
+    image: ${DOCKER_REGISTRY-}todoapp-api
+    container_name: todoapp-api
     build:
       context: .
       dockerfile: src/TodoApplication.API/Dockerfile
+  
+  emailservice-api:
+    image: ${DOCKER_REGISTRY-}emailservice-api
+    container_name: emailservice-api
+    build:
+      context: .
+      dockerfile: src/EmailService.API/Dockerfile
    
-  todoapplication.database:
+  todoapp-db:
     image: postgres:latest
-    container_name: product.psql
+    container_name: todoapp-db
     environment:
      - POSTGRES_DB=product
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=postgres
     volumes:
-     - ./.containers/product-db:/var/lib/postgresql/data 
+     - ./.containers/postgres-data:/var/lib/postgresql/data 
     ports:
      - 5432:5432
 
-  todoapplication-seq:
+  todoapp-seq:
     image: datalust/seq:latest
-    container_name: todoapplication.seq
+    container_name: todoapp-seq
     environment:
-     - ACCEPT_EULA=Y
+      ACCEPT_EULA: Y
     ports:
-     - 5341:5341
-     - 8000:80
-  
-  todoapplication-mq:
-     image: rabbitmq:3.11.7-management
-     container_name: Queue
-     hostname: todoapplication-queue
-     volumes:
-      - ./.containers/queue/data/:/var/lib/rabbitmq 
-      - ./.containers/queue/log/:/var/log/rabbitmq
-     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-     ports:
-      - 15672:15672  
- 
+      - 5341:5341
+      - 8000:80
 
- 
+  todoapp-mq:
+    image: rabbitmq:3.11.7-management
+    container_name: todoapp-rabbitmq
+    hostname: todoapp-rabbitmq
+    volumes:
+      - ./.containers/rabbitmq-data:/var/lib/rabbitmq
+      - ./.containers/rabbitmq-log:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 15672:15672
+      - 5672:5672
+
+  inventory-api:
+    image: ${DOCKER_REGISTRY-}inventory-api
+    container_name: inventory-api
+    build:
+      context: .
+      dockerfile: src/Inventory.API/Dockerfile
+

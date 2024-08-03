@@ -1,9 +1,10 @@
-﻿using Application.Abstractions.EventBus;
-using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Messaging;
 using Application.Products.Event;
 using Domain.Entities;
 using Domain.Repositories;
 using MediatR;
+using MessageContract;
+using MessageContract.EventBus;
 using SharedKernel;
 
 namespace Application.Products.Command.Create;
@@ -12,7 +13,7 @@ internal sealed class CreateProductCommandHandler : ICommandHandler<CreateProduc
 {
     private readonly IProductRepository _productRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private IEventBus _eventBus;
+    private readonly IEventBus _eventBus;
 
     public CreateProductCommandHandler(IProductRepository productRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
     {

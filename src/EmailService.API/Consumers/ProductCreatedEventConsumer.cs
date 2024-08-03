@@ -1,7 +1,8 @@
 ﻿using MassTransit;
-using Microsoft.Extensions.Logging;
+using MessageContract;
 
-namespace Application.Products.Event;
+namespace EmailService.API.Consumers;
+
 public class ProductCreatedEventConsumer : IConsumer<ProductCreatedEvent>
 {
     private readonly ILogger<ProductCreatedEventConsumer> _logger;

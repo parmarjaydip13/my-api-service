@@ -4,7 +4,9 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "todoapplication.api": "StartDebugging"
+        "todoapplication.api": "StartDebugging",
+        "emailservice.api": "StartDebugging",
+        "inventory.api": "StartDebugging"
       }
     }
   }

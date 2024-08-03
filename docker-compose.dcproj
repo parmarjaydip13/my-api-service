@@ -7,7 +7,7 @@
     <ProjectGuid>2b56c122-d913-481d-8c64-c9177c269b33</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>todoapplication.api</DockerServiceName>
+    <DockerServiceName>todoapp-api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

@@ -1,9 +1,7 @@
-﻿using Application.Abstractions.EventBus;
-using Application.Products.Event;
-using Infrastructure.BackGroundJobs;
+﻿using Infrastructure.BackGroundJobs;
 using Infrastructure.MessageBroker;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
+using MessageContract.EventBus;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.AspNetCore;
@@ -20,12 +18,10 @@ public static class DependencyInjection
                     .AddClasses(false)
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
-        
+
         services.AddMassTransit(configure =>
         {
             configure.SetKebabCaseEndpointNameFormatter();
-
-            configure.AddConsumer<ProductCreatedEventConsumer>();
 
             configure.UsingRabbitMq((context, configurator) =>
             {
@@ -55,7 +51,7 @@ public static class DependencyInjection
                             .WithIdentity("Minutes Trigger")
                             .WithSimpleSchedule(
                                 schedule =>
-                                    schedule.WithIntervalInMinutes(30)
+                                    schedule.WithIntervalInMinutes(10)
                                         .RepeatForever()));
 
         });

@@ -1,15 +1,42 @@
 version: '3.4'
 
 services:
-  todoapplication.api:
+  todoapp-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ASPNETCORE_URLS=http://*:8080
+      - MessageBroker__Host=amqp://todoapp-rabbitmq:5672
+      - ConnectionStrings__Database=Host=todoapp-db;Port=5432;Database=product;Username=postgres;Password=postgres;Include Error Detail=true
     ports:
-      - "8080"
-      - "8081"
+      - 8080:8080
+      - 8081:8081
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+ 
+  emailservice-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=7070
+      - ASPNETCORE_HTTPS_PORTS=7071
+      - MessageBroker__Host=amqp://todoapp-rabbitmq:5672
+    ports:
+      - 7070:7070
+      - 7071:7071
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  inventory-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=7072
+      - ASPNETCORE_HTTPS_PORTS=7073
+    ports:
+     - 7072:7072
+     - 7073:7073
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
